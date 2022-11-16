@@ -23,8 +23,8 @@ pub async fn handle(event: ThreadUpdate, config: Arc<Mutex<BotConfig>>, http: Ar
     };
 
     let mut applied_tags = event.applied_tags.clone().unwrap_or_default();
-    let has_solved = applied_tags.iter().any(|v| v == &solved_tag_id);
-    let has_unsolved = applied_tags.iter().any(|v| v == &unsolved_tag_id);
+    let has_solved = applied_tags.iter().any(|&v| v == solved_tag_id);
+    let has_unsolved = applied_tags.iter().any(|&v| v == unsolved_tag_id);
 
     if has_solved && has_unsolved {
         applied_tags.retain(|&v| v != unsolved_tag_id);
