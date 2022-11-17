@@ -19,8 +19,12 @@ impl BotConfig {
         Id::new(id.parse::<u64>().unwrap())
     }
 
+    pub fn path() -> String {
+        std::env::var("CONFIG_PATH").unwrap_or_else(|_| "./config.json".to_string())
+    }
+
     pub fn get_saved() -> BotConfig {
-        match fs::read("./config.json") {
+        match fs::read(BotConfig::path()) {
             Ok(value) => serde_json::from_str(&String::from_utf8(value).unwrap()).unwrap(),
             Err(error) if matches!(error.kind(), ErrorKind::NotFound) => BotConfig::default(),
             Err(error) => panic!("Config could not be loaded {error:?}"),
@@ -28,7 +32,7 @@ impl BotConfig {
     }
 
     pub fn save(&self) {
-        fs::write("./config.json", serde_json::to_string(self).unwrap())
+        fs::write(BotConfig::path(), serde_json::to_string(self).unwrap())
             .expect("Config could not be saved");
     }
 
